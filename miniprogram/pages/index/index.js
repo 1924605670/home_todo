@@ -89,6 +89,10 @@ Page({
     })
   },
 
+  goToRank() {
+    wx.navigateTo({ url: '/pages/rank/index' })
+  },
+
   goToCreate() {
     wx.switchTab({ url: '/pages/task_create/index' })
   },

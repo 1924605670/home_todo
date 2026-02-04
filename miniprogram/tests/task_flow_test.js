@@ -2,7 +2,7 @@
 // 这是一个模拟测试脚本，用于手动验证或集成测试参考
 
 const request = require('request'); // 假设引入一个 HTTP 客户端库
-const baseUrl = 'http://localhost:3000/api';
+const baseUrl = 'http://8.152.223.130:3000/api';
 
 async function runTest() {
     console.log('=== 开始全链路测试 ===');

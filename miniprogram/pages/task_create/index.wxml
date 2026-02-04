@@ -20,18 +20,55 @@
     </view>
     
     <!-- 任务属性行：类型 + 截止时间 -->
-    <view class="form-item border-bottom flex-row justify-between align-center">
-        <view class="flex-row align-center" style="flex: 1;">
-            <text class="text-h3 mr-20">类型</text>
-            <picker bindchange="onTypeChange" value="{{typeIndex}}" range="{{types}}">
-                <view class="picker-value bg-gray">{{types[typeIndex]}} ></view>
-            </picker>
+    <view class="form-item border-bottom">
+        <view class="mb-20">
+            <text class="text-h3 mb-10" style="display:block;">类型</text>
+            <scroll-view scroll-x="true" class="quick-scroll" enable-flex="true">
+                <view class="quick-list flex-row">
+                    <view class="tag-type {{typeIndex === index ? 'active' : ''}} mr-20" 
+                        wx:for="{{types}}" wx:key="*this"
+                        bindtap="onTypeSelect" data-index="{{index}}">
+                        {{item}}
+                    </view>
+                </view>
+            </scroll-view>
         </view>
-        <view class="flex-row align-center">
-            <text class="text-h3 mr-20">截止</text>
-            <picker mode="time" value="{{time}}" bindchange="onTimeChange">
-                <view class="picker-value bg-gray">{{time}}</view>
-            </picker>
+
+        <view class="mb-20">
+            <view class="flex-row justify-between align-center mb-10">
+                <text class="text-h3">截止时间</text>
+                <view class="flex-row">
+                    <picker mode="date" value="{{date}}" start="2024-01-01" bindchange="onDateChange">
+                        <view class="picker-value bg-gray mr-10">{{date}}</view>
+                    </picker>
+                    <picker mode="time" value="{{time}}" bindchange="onTimeChange">
+                        <view class="picker-value bg-gray">{{time}}</view>
+                    </picker>
+                </view>
+            </view>
+            
+            <!-- 智能截止时间建议 -->
+            <scroll-view scroll-x="true" class="quick-scroll" enable-flex="true">
+                <view class="quick-list flex-row">
+                    <view class="tag-deadline {{date === item.date && time === item.time ? 'active' : ''}} mr-20" 
+                        wx:for="{{deadlineOptions}}" wx:key="label"
+                        bindtap="onDeadlineSelect" data-date="{{item.date}}" data-time="{{item.time}}">
+                        {{item.label}}
+                    </view>
+                </view>
+            </scroll-view>
+        </view>
+
+        <!-- 积分奖励 -->
+        <view>
+            <text class="text-h3 mb-10" style="display:block;">积分奖励</text>
+            <view class="flex-row">
+                <view class="tag-point {{rewardPoints === item ? 'active' : ''}} mr-20" 
+                      wx:for="{{pointOptions}}" wx:key="*this"
+                      bindtap="onPointChange" data-value="{{item}}">
+                    {{item}} 分
+                </view>
+            </view>
         </view>
     </view>
 

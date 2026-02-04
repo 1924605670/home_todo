@@ -201,6 +201,16 @@ app.get('/api/task/list', async (req, res) => {
 app.post('/api/task/complete', async (req, res) => {
     const { openid, taskId } = req.body;
     try {
+        // 1. 获取任务详情，确认积分值
+        const taskRes = await db.collection('tasks').doc(taskId).get();
+        if (!taskRes.data) return res.json({ code: -1, msg: '任务不存在' });
+        
+        const task = taskRes.data;
+        if (task.status === 'completed') return res.json({ code: 0, msg: '已完成' });
+
+        const rewardPoints = task.reward_points || 10; // 默认10分
+
+        // 2. 更新任务状态
         await db.collection('tasks').doc(taskId).update({
             data: {
                 status: 'completed',
@@ -208,9 +218,41 @@ app.post('/api/task/complete', async (req, res) => {
                 completer_openid: openid
             }
         });
-        res.json({ code: 0, msg: 'Success' });
+
+        // 3. 增加用户积分
+        // 注意：这里需要原子操作或事务，简易版先分步执行
+        const memberRes = await db.collection('members').where({ openid: openid, family_id: task.family_id }).get();
+        if (memberRes.data.length > 0) {
+            const member = memberRes.data[0];
+            const newPoints = (member.points || 0) + rewardPoints;
+            const newTotal = (member.total_points || 0) + rewardPoints;
+            
+            await db.collection('members').doc(member._id).update({
+                data: {
+                    points: newPoints,
+                    total_points: newTotal
+                }
+            });
+        }
+
+        res.json({ code: 0, msg: 'Success', data: { earnedPoints: rewardPoints } });
     } catch (e) {
         res.json({ code: -1, msg: '失败', error: e.toString() });
+    }
+});
+
+app.get('/api/rank/list', async (req, res) => {
+    const { familyId } = req.query;
+    try {
+        // 按总积分降序排列
+        const result = await db.collection('members')
+            .where({ family_id: familyId })
+            .orderBy('total_points', 'desc')
+            .get();
+            
+        res.json({ code: 0, data: result.data });
+    } catch (e) {
+        res.json({ code: -1, msg: '获取排行榜失败', error: e.toString() });
     }
 });
 

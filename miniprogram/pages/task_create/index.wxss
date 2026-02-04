@@ -65,6 +65,58 @@
   border: 1rpx solid rgba(102, 126, 234, 0.2);
 }
 
+.tag-type {
+  padding: 10rpx 30rpx;
+  font-size: 26rpx;
+  border-radius: 30rpx;
+  background: #F5F7FA;
+  color: var(--text-sub);
+  border: 1rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.tag-type.active {
+  background: #EBF8FF;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.tag-deadline {
+  padding: 10rpx 24rpx;
+  font-size: 24rpx;
+  border-radius: 12rpx;
+  background: #F5F7FA;
+  color: var(--text-sub);
+  border: 1rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.tag-deadline.active {
+  background: #F0FFF4;
+  color: var(--success-color);
+  border-color: var(--success-color);
+  font-weight: 600;
+}
+
+.tag-point {
+  padding: 10rpx 24rpx;
+  font-size: 24rpx;
+  border-radius: 12rpx;
+  background: #FFF9C4;
+  color: #D69E2E;
+  border: 1rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.tag-point.active {
+  background: #ECC94B;
+  color: #fff;
+  border-color: #ECC94B;
+  font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(236, 201, 75, 0.3);
+}
+
 /* Member Scroll */
 .member-scroll {
   width: 100%;

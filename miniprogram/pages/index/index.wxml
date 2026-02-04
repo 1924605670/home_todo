@@ -4,7 +4,12 @@
     <view class="flex-row justify-between align-center">
       <view class="flex-col">
         <text class="text-h2 mb-10">{{greeting}}，{{userInfo.nickName || '家人'}}</text>
-        <text class="text-desc">今天也是充满活力的一天！</text>
+        <view class="flex-row align-center">
+            <text class="text-desc mr-20">今天也是充满活力的一天！</text>
+            <view class="tag tag-primary" style="font-size: 20rpx; padding: 4rpx 12rpx;">
+                积分: {{userInfo.points || 0}}
+            </view>
+        </view>
       </view>
       <image class="avatar" src="{{userInfo.avatarUrl || '../../images/user.png'}}"></image>
     </view>
@@ -88,7 +93,7 @@
           </view>
           <text class="text-body">家庭任务</text>
         </view>
-        <view class="grid-item flex-col align-center">
+        <view class="grid-item flex-col align-center" bindtap="goToRank">
           <view class="icon-box bg-green mb-10">
             <!-- 奖杯图标 -->
             <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTggMjFoOE0xMiAxN3Y0TTcgNmgxME01IDZ2NGMwIDIuOTIgMi4xNiA1LjMzIDUgNS45M2M1Ljg0LS4wNiA4LTMuMDEgOC01LjkzVjZNOSAxMGgzIi8+PC9zdmc+" class="grid-icon"></image>

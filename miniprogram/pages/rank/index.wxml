@@ -1,0 +1,51 @@
+<view class="container">
+  <!-- 顶部冠军区 -->
+  <view class="rank-header">
+    <view class="top-three flex-row align-end justify-center" wx:if="{{rankingList.length > 0}}">
+      <!-- 亚军 -->
+      <view class="rank-item second flex-col align-center" wx:if="{{rankingList[1]}}">
+        <view class="crown silver"></view>
+        <image class="avatar" src="{{rankingList[1].avatarUrl || '../../images/user.png'}}"></image>
+        <view class="rank-num">2</view>
+        <text class="name text-truncate">{{rankingList[1].nickName}}</text>
+        <text class="score">{{rankingList[1].total_points || 0}}</text>
+      </view>
+
+      <!-- 冠军 -->
+      <view class="rank-item first flex-col align-center" wx:if="{{rankingList[0]}}">
+        <view class="crown gold"></view>
+        <image class="avatar" src="{{rankingList[0].avatarUrl || '../../images/user.png'}}"></image>
+        <view class="rank-num">1</view>
+        <text class="name text-truncate">{{rankingList[0].nickName}}</text>
+        <text class="score">{{rankingList[0].total_points || 0}}</text>
+      </view>
+
+      <!-- 季军 -->
+      <view class="rank-item third flex-col align-center" wx:if="{{rankingList[2]}}">
+        <view class="crown bronze"></view>
+        <image class="avatar" src="{{rankingList[2].avatarUrl || '../../images/user.png'}}"></image>
+        <view class="rank-num">3</view>
+        <text class="name text-truncate">{{rankingList[2].nickName}}</text>
+        <text class="score">{{rankingList[2].total_points || 0}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 列表区 -->
+  <view class="rank-list card">
+    <view class="list-item flex-row align-center justify-between" 
+          wx:for="{{rankingList}}" wx:key="_id" 
+          wx:if="{{index > 2}}">
+      <view class="flex-row align-center">
+        <view class="rank-index">{{index + 1}}</view>
+        <image class="avatar-sm mr-20" src="{{item.avatarUrl || '../../images/user.png'}}"></image>
+        <text class="text-body">{{item.nickName}}</text>
+      </view>
+      <text class="score-sm">{{item.total_points || 0}} 分</text>
+    </view>
+    
+    <view class="empty-state" wx:if="{{rankingList.length === 0}}">
+      <text class="text-desc">暂无排行数据</text>
+    </view>
+  </view>
+</view>
