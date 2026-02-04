@@ -124,7 +124,6 @@ Page({
   },
   
   showHistory() {
-      wx.showToast({ title: '功能开发中', icon: 'none' });
-      // TODO: 跳转到兑换记录页
+      wx.navigateTo({ url: '/pages/shop_history/index' });
   }
 })

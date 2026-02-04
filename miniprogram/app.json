@@ -5,7 +5,8 @@
     "pages/task_list/index",
     "pages/profile/index",
     "pages/rank/index",
-    "pages/shop/index"
+    "pages/shop/index",
+    "pages/shop_history/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

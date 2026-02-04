@@ -1,0 +1,19 @@
+<view class="container">
+  <view class="history-list" wx:if="{{list.length > 0}}">
+    <view class="history-card card flex-row justify-between align-center mb-20" wx:for="{{list}}" wx:key="_id">
+      <view class="flex-col">
+        <text class="text-h3 mb-10">{{item.reward_name}}</text>
+        <text class="text-desc">{{item.createTimeStr}}</text>
+      </view>
+      <view class="flex-col align-end">
+        <text class="cost-text">-{{item.cost}} 积分</text>
+        <view class="status-tag {{item.status}}">{{item.statusText}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state flex-col align-center justify-center" wx:else>
+    <image class="empty-img mb-30" src="../../images/gift_placeholder.png" style="opacity: 0.3; width: 150rpx; height: 150rpx;"></image>
+    <text class="text-desc">暂无兑换记录</text>
+  </view>
+</view>

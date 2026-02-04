@@ -1,0 +1,40 @@
+page {
+  background: #F7F8FA;
+  padding: 20rpx;
+}
+
+.history-card {
+  padding: 30rpx;
+}
+
+.cost-text {
+  color: #F6AD55;
+  font-weight: bold;
+  font-size: 32rpx;
+  margin-bottom: 10rpx;
+}
+
+.status-tag {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.status-tag.pending {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.status-tag.approved {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+.status-tag.rejected {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.empty-state {
+  padding-top: 200rpx;
+}
