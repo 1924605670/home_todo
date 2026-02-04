@@ -80,7 +80,7 @@
     <view class="section">
       <view class="grid-menu flex-row justify-between">
         <view class="grid-item flex-col align-center" bindtap="goToCreate">
-          <view class="icon-box bg-blue mb-10">
+          <view class="icon-box bg-purple mb-10">
             <!-- 纸飞机图标 -->
             <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIyIDJMMTEgMTNNMjIgMmw3IDIwLTQtOS05LTQgMjAtN3oiLz48L3N2Zz4=" class="grid-icon"></image>
           </view>

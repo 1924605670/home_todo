@@ -117,6 +117,7 @@
 .bg-blue { background: var(--primary-gradient); }
 .bg-orange { background: var(--warning-gradient); }
 .bg-green { background: var(--success-gradient); }
+.bg-purple { background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%); box-shadow: 0 8rpx 20rpx rgba(142, 45, 226, 0.3); }
 
 .grid-icon {
   width: 50rpx; /* 调整图标大小 */
