@@ -1,0 +1,52 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server using SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: 8.152.223.130
+          username: root
+          password: "112694Wen"
+          # 注意：为了演示方便直接使用了明文密码。
+          # 强烈建议您后续在 GitHub 仓库 Settings -> Secrets 中配置 SERVER_PASSWORD，并将此处改为 ${{ secrets.SERVER_PASSWORD }}
+          
+          script: |
+            # 1. 准备工作目录
+            mkdir -p /root/workspace
+            cd /root/workspace
+            
+            # 2. 拉取代码 (如果不存在则 clone)
+            if [ -d "home_todo" ]; then
+              cd home_todo
+              git pull origin master
+            else
+              git clone https://github.com/1924605670/home_todo.git
+              cd home_todo
+            fi
+            
+            # 3. 安装依赖并重启后端服务
+            cd server
+            # 确保安装了 pm2
+            if ! command -v pm2 &> /dev/null; then
+                npm install -g pm2
+            fi
+            
+            npm install
+            
+            # 4. 启动服务
+            # 如果 pm2 中已经有该进程则重启，否则启动
+            if pm2 list | grep -q "family-server"; then
+                pm2 restart family-server
+            else
+                pm2 start index.js --name family-server
+            fi
+            
+            pm2 save
+            echo "Deployment successful!"
