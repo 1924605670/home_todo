@@ -9,13 +9,19 @@ if (!fs.existsSync(DB_FILE)) {
   const initialData = {
     families: [],
     members: [],
-    tasks: []
+    tasks: [],
+    rewards: [],
+    redemptions: []
   };
   fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
 }
 
 function readDb() {
-  return JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+  const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+  // 确保所有集合都存在
+  if (!data.rewards) data.rewards = [];
+  if (!data.redemptions) data.redemptions = [];
+  return data;
 }
 
 function writeDb(data) {
@@ -28,6 +34,7 @@ const db = {
     return {
       add: async ({ data }) => {
         const dbData = readDb();
+        if (!dbData[name]) dbData[name] = []; // 动态创建集合
         const newItem = { _id: Date.now().toString() + Math.random().toString(36).substr(2, 9), ...data };
         dbData[name].push(newItem);
         writeDb(dbData);
