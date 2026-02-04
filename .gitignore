@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+miniprogram_npm/
+
+# System Files
+.DS_Store
+._*
+Thumbs.db
+
+# WeChat Mini Program
+project.private.config.json
+unpackage/
+dist/
+
+# IDE
+.idea/
+.vscode/
+.trae/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

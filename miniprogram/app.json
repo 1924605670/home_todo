@@ -1,0 +1,46 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/task_create/index",
+    "pages/task_list/index",
+    "pages/profile/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "家庭任务助手",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#a9b7b7",
+    "selectedColor": "#1296db",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home_active.png"
+      },
+      {
+        "pagePath": "pages/task_list/index",
+        "text": "任务",
+        "iconPath": "images/task.png",
+        "selectedIconPath": "images/task_active.png"
+      },
+      {
+        "pagePath": "pages/task_create/index",
+        "text": "发布",
+        "iconPath": "images/add.png",
+        "selectedIconPath": "images/add_active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "images/user.png",
+        "selectedIconPath": "images/user_active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,69 @@
+<view class="container">
+  <view class="header mb-20">
+    <text class="text-h2">发布新任务</text>
+  </view>
+
+  <view class="card">
+    <!-- 任务名称 -->
+    <view class="form-item border-bottom">
+      <input class="input-box mb-10" placeholder="例如：洗碗、做作业" value="{{title}}" bindinput="onTitleInput"/>
+      <!-- 快捷建议 Quick Pick -->
+      <scroll-view scroll-x="true" class="quick-scroll" enable-flex="true">
+        <view class="quick-list flex-row">
+          <view class="tag tag-primary mr-20" 
+                wx:for="{{quickOptions}}" wx:key="*this"
+                bindtap="onQuickSelect" data-value="{{item}}">
+            {{item}}
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    
+    <!-- 任务属性行：类型 + 截止时间 -->
+    <view class="form-item border-bottom flex-row justify-between align-center">
+        <view class="flex-row align-center" style="flex: 1;">
+            <text class="text-h3 mr-20">类型</text>
+            <picker bindchange="onTypeChange" value="{{typeIndex}}" range="{{types}}">
+                <view class="picker-value bg-gray">{{types[typeIndex]}} ></view>
+            </picker>
+        </view>
+        <view class="flex-row align-center">
+            <text class="text-h3 mr-20">截止</text>
+            <picker mode="time" value="{{time}}" bindchange="onTimeChange">
+                <view class="picker-value bg-gray">{{time}}</view>
+            </picker>
+        </view>
+    </view>
+
+    <!-- 执行人 -->
+    <view class="form-item border-bottom">
+      <view class="text-h3 mb-10">执行人</view>
+      <scroll-view scroll-x="true" class="member-scroll">
+        <view class="member-list flex-row">
+          <view class="member-item flex-col align-center {{assigneeIndex === index ? 'active' : ''}}" 
+                wx:for="{{members}}" wx:key="_id"
+                bindtap="onAssigneeChange" data-index="{{index}}">
+            <image class="avatar {{assigneeIndex === index ? 'avatar-active' : ''}}" src="{{item.avatarUrl || '../../images/user.png'}}"></image>
+            <text class="text-desc mt-10 text-truncate">{{item.nickName}}</text>
+            <view class="check-mark" wx:if="{{assigneeIndex === index}}">✓</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 优先级 -->
+    <view class="form-item mt-10">
+      <view class="priority-group flex-row justify-between">
+        <view class="priority-item {{priority === item.value ? 'active ' + item.value : ''}}" 
+              wx:for="{{priorities}}" wx:key="value"
+              bindtap="onPriorityChange" data-value="{{item.value}}">
+          <text>{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer-btn">
+    <button class="btn-primary" bindtap="submitTask">立即发布</button>
+  </view>
+</view>

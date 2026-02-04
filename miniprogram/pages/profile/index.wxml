@@ -1,0 +1,102 @@
+<view class="container">
+  <!-- 个人信息 -->
+  <view class="user-card card flex-row align-center mb-30">
+    <image class="avatar-lg mr-20" src="{{userInfo.avatarUrl || '../../images/user.png'}}"></image>
+    <view class="flex-col">
+      <view class="flex-row align-center mb-10">
+        <text class="text-h2 mr-10">{{userInfo.nickName || '未登录'}}</text>
+        <view class="role-tag" wx:if="{{member}}">{{member.role === 'admin' ? '管理员' : '成员'}}</view>
+      </view>
+      <text class="text-desc">积分: {{member.score || 0}} (功能开发中)</text>
+    </view>
+  </view>
+
+  <!-- 未加入家庭状态 -->
+  <view class="no-family-section" wx:if="{{!hasFamily}}">
+    <view class="card action-card flex-col align-center">
+      <image src="../../images/home.png" class="action-icon mb-20"></image>
+      <view class="text-h3 mb-10">创建新家庭</view>
+      <view class="text-desc mb-30">我是家长，我要建立一个家庭任务空间</view>
+      <button class="btn-primary" bindtap="getUserProfile" data-type="create">创建家庭</button>
+    </view>
+    <view class="card action-card flex-col align-center">
+      <image src="../../images/add.png" class="action-icon mb-20" style="opacity: 0.5;"></image>
+      <view class="text-h3 mb-10">加入家庭</view>
+      <view class="text-desc mb-30">我有邀请码，我要加入已有的家庭</view>
+      <button class="btn-secondary" bindtap="getUserProfile" data-type="join">加入家庭</button>
+    </view>
+  </view>
+
+  <!-- 已加入家庭状态 -->
+  <view class="family-section" wx:else>
+    <view class="card family-info">
+      <view class="flex-row justify-between align-center mb-30">
+        <text class="text-h2">{{family.name}}</text>
+        <view class="invite-btn" bindtap="copyInviteCode">
+          <text class="mr-10">邀请码: {{family.invite_code}}</text>
+          <text class="copy-icon">❐</text>
+        </view>
+      </view>
+      
+      <view class="divider mb-30"></view>
+      
+      <view class="members-list">
+        <view class="text-h3 mb-20">家庭成员 ({{members.length}})</view>
+        <view class="member-grid">
+          <view class="member-cell flex-col align-center" wx:for="{{members}}" wx:key="_id">
+            <image class="avatar mb-10" src="{{item.avatarUrl || '../../images/user.png'}}"></image>
+            <text class="text-body">{{item.nickName}}</text>
+            <text class="text-desc tag tag-primary mt-10" wx:if="{{item.role === 'admin'}}">管理员</text>
+          </view>
+          <!-- 邀请按钮 -->
+          <view class="member-cell flex-col align-center" bindtap="copyInviteCode">
+            <view class="add-member-btn mb-10">+</view>
+            <text class="text-desc">邀请</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能列表 -->
+    <view class="card menu-list">
+      <view class="menu-item flex-row justify-between align-center border-bottom">
+        <view class="flex-row align-center">
+          <text class="menu-icon mr-20">📊</text>
+          <text class="text-body">数据导出</text>
+        </view>
+        <text class="text-desc">></text>
+      </view>
+      <view class="menu-item flex-row justify-between align-center">
+        <view class="flex-row align-center">
+          <text class="menu-icon mr-20">ℹ️</text>
+          <text class="text-body">关于我们</text>
+        </view>
+        <text class="text-desc">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 创建家庭弹窗 -->
+  <view class="modal-mask" wx:if="{{showCreateModal}}">
+    <view class="modal-content card">
+      <view class="text-h3 text-center mb-30">创建家庭</view>
+      <input class="input-box mb-30" placeholder="给家庭起个名字 (如: 快乐之家)" bindinput="onInputFamilyName"/>
+      <view class="modal-footer flex-row justify-between">
+        <button class="btn-secondary mr-20" bindtap="closeModal">取消</button>
+        <button class="btn-primary" bindtap="confirmCreate">创建</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加入家庭弹窗 -->
+  <view class="modal-mask" wx:if="{{showJoinModal}}">
+    <view class="modal-content card">
+      <view class="text-h3 text-center mb-30">加入家庭</view>
+      <input class="input-box mb-30" placeholder="请输入6位邀请码" bindinput="onInputInviteCode"/>
+      <view class="modal-footer flex-row justify-between">
+        <button class="btn-secondary mr-20" bindtap="closeModal">取消</button>
+        <button class="btn-primary" bindtap="confirmJoin">加入</button>
+      </view>
+    </view>
+  </view>
+</view>

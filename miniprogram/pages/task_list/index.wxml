@@ -1,0 +1,58 @@
+<view class="container">
+  <!-- Tab Bar -->
+  <view class="tab-bar flex-row">
+    <view class="tab-item {{currentTab === index ? 'active' : ''}}" 
+          wx:for="{{tabs}}" wx:key="*this"
+          bindtap="switchTab" data-index="{{index}}">
+      {{item}}
+      <view class="tab-line" wx:if="{{currentTab === index}}"></view>
+    </view>
+  </view>
+
+  <!-- Task List -->
+  <view class="task-list">
+    <block wx:if="{{taskGroups.length > 0}}">
+      <view class="task-group" wx:for="{{taskGroups}}" wx:key="title" wx:for-item="group">
+        <!-- 分组标题 -->
+        <view class="group-header flex-row align-center mb-20">
+          <view class="group-dot {{group.color}}"></view>
+          <text class="text-h3 mr-10">{{group.title}}</text>
+          <text class="text-desc">({{group.list.length}})</text>
+        </view>
+
+        <!-- 任务卡片 -->
+        <view class="task-card card flex-row" wx:for="{{group.list}}" wx:key="_id" bindlongpress="showActionSheet" data-task="{{item}}">
+          <!-- 优先级条 -->
+          <view class="priority-strip {{item.priority}}"></view>
+          
+          <view class="content flex-col">
+            <view class="flex-row justify-between mb-10">
+              <text class="text-h3">{{item.title}}</text>
+              <view class="status-tag {{item.status}}" wx:if="{{item.status !== 'pending'}}">
+                {{item.status === 'completed' ? '已完成' : '已逾期'}}
+              </view>
+            </view>
+            
+            <view class="text-desc mb-20 line-clamp-2">{{item.desc || '暂无描述'}}</view>
+            
+            <view class="footer flex-row justify-between align-center">
+              <view class="flex-row align-center">
+                <image class="avatar-sm mr-10" src="{{item.assignee_avatar || '../../images/user.png'}}"></image>
+                <text class="text-desc mr-20">{{item.assignee_name}}</text>
+                <text class="tag tag-primary">{{item.type}}</text>
+              </view>
+              <text class="text-desc">{{item.deadlineStr}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+    
+    <!-- 空状态 -->
+    <view class="empty-state flex-col align-center justify-center" wx:else>
+      <image class="empty-img mb-30" src="../../images/task.png"></image>
+      <text class="text-desc">这里空空如也，去发布新任务吧</text>
+      <navigator url="/pages/task_create/index" open-type="switchTab" class="btn-primary mt-20" style="width: 200rpx; font-size: 28rpx; padding: 16rpx 0;">去发布</navigator>
+    </view>
+  </view>
+</view>

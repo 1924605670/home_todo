@@ -1,0 +1,101 @@
+<view class="container">
+  <!-- 顶部欢迎区 -->
+  <view class="header-section mb-30">
+    <view class="flex-row justify-between align-center">
+      <view class="flex-col">
+        <text class="text-h2 mb-10">{{greeting}}，{{userInfo.nickName || '家人'}}</text>
+        <text class="text-desc">今天也是充满活力的一天！</text>
+      </view>
+      <image class="avatar" src="{{userInfo.avatarUrl || '../../images/user.png'}}"></image>
+    </view>
+  </view>
+
+  <!-- 未加入家庭 -->
+  <view class="welcome-card card" wx:if="{{!hasFamily}}">
+    <image class="welcome-img" src="../../images/home.png" mode="aspectFit"></image>
+    <view class="text-h3 mb-20">开启家庭协作之旅</view>
+    <view class="text-desc mb-30">创建或加入家庭，与家人共享任务清单</view>
+    <navigator url="/pages/profile/index" open-type="switchTab" class="btn-primary" style="display:inline-block; width: 60%;">去创建/加入</navigator>
+  </view>
+
+  <!-- 已加入家庭 -->
+  <view class="content" wx:else>
+    <!-- 今日概览 -->
+    <view class="stats-card card flex-row justify-between mb-30">
+      <view class="flex-col">
+        <text class="text-desc mb-10">今日待办</text>
+        <view class="flex-row align-center">
+          <text class="text-h1 mr-10" style="color: var(--primary-color);">{{statistics.todayCount}}</text>
+          <text class="text-desc">个任务</text>
+        </view>
+      </view>
+      <view class="progress-ring" style="background: conic-gradient(var(--primary-color) {{statistics.completionRate}}%, #E6F0FA 0);">
+        <view class="ring-inner">
+          <view class="ring-text">{{statistics.completionRate}}%</view>
+          <view class="text-desc" style="font-size: 18rpx;">完成率</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 待办任务 -->
+    <view class="section mb-30">
+      <view class="flex-row justify-between align-center mb-20">
+        <text class="text-h3">我的待办</text>
+        <view class="flex-row align-center" bindtap="goToList">
+          <text class="text-desc mr-10">查看全部</text>
+          <text class="text-desc">></text>
+        </view>
+      </view>
+      
+      <view class="task-list" wx:if="{{myTasks.length > 0}}">
+        <view class="task-card card flex-row justify-between align-center" wx:for="{{myTasks}}" wx:key="_id">
+          <view class="flex-row align-center" style="flex: 1;">
+            <view class="priority-dot {{item.priority}} mr-20"></view>
+            <view class="flex-col">
+              <text class="text-body mb-10">{{item.title}}</text>
+              <view class="flex-row">
+                <text class="tag tag-primary mr-10">{{item.type}}</text>
+                <text class="text-desc">{{item.deadlineStr}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="check-btn" bindtap="completeTask" data-id="{{item._id}}">
+            <view class="check-icon"></view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="empty-state card flex-col align-center justify-center" wx:else>
+        <image src="../../images/task.png" class="empty-icon mb-20"></image>
+        <text class="text-desc">暂无待办，享受生活吧~</text>
+      </view>
+    </view>
+
+    <!-- 快捷入口 -->
+    <view class="section">
+      <view class="grid-menu flex-row justify-between">
+        <view class="grid-item flex-col align-center" bindtap="goToCreate">
+          <view class="icon-box bg-blue mb-10">
+            <!-- 纸飞机图标 -->
+            <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIyIDJMMTEgMTNNMjIgMmw3IDIwLTQtOS05LTQgMjAtN3oiLz48L3N2Zz4=" class="grid-icon"></image>
+          </view>
+          <text class="text-body">发布任务</text>
+        </view>
+        <view class="grid-item flex-col align-center" bindtap="goToList">
+          <view class="icon-box bg-orange mb-10">
+            <!-- 列表图标 -->
+            <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTkgMTFoMTJNOSAxN2gxMk05IDVoMTJNMzIDN2gyTTMgMTdoMk0zIDdoMiIvPjwvc3ZnPg==" class="grid-icon"></image>
+          </view>
+          <text class="text-body">家庭任务</text>
+        </view>
+        <view class="grid-item flex-col align-center">
+          <view class="icon-box bg-green mb-10">
+            <!-- 奖杯图标 -->
+            <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTggMjFoOE0xMiAxN3Y0TTcgNmgxME01IDZ2NGMwIDIuOTIgMi4xNiA1LjMzIDUgNS45M2M1Ljg0LS4wNiA4LTMuMDEgOC01LjkzVjZNOSAxMGgzIi8+PC9zdmc+" class="grid-icon"></image>
+          </view>
+          <text class="text-body">积分榜</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

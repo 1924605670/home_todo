@@ -1,0 +1,125 @@
+.header-section {
+  padding: 30rpx;
+  background: var(--primary-gradient);
+  border-radius: 0 0 40rpx 40rpx;
+  margin: -30rpx -30rpx 30rpx -30rpx;
+  color: #fff;
+  box-shadow: 0 10rpx 30rpx rgba(102, 126, 234, 0.3);
+}
+
+.header-section .text-h2 { color: #fff; }
+.header-section .text-desc { color: rgba(255, 255, 255, 0.8); }
+
+.welcome-card {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  margin-top: 40rpx;
+}
+
+.welcome-img {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 40rpx;
+}
+
+/* Stats Card */
+.stats-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+}
+
+.progress-ring {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ring-inner {
+  width: 100rpx;
+  height: 100rpx;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-text {
+  font-size: 24rpx;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+/* Task List */
+.task-card {
+  padding: 30rpx;
+}
+
+.priority-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+.priority-dot.high { background: var(--danger-gradient); }
+.priority-dot.medium { background: var(--warning-gradient); }
+.priority-dot.low { background: var(--success-gradient); }
+
+.check-btn {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  border: 4rpx solid #E0E0E0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state {
+  padding: 60rpx 0;
+}
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  opacity: 0.3;
+}
+
+/* Grid Menu */
+.grid-menu {
+  padding: 20rpx 0;
+}
+
+.grid-item {
+  flex: 1;
+}
+
+.icon-box {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+  margin-bottom: 16rpx;
+}
+
+.icon-box:active {
+  transform: scale(0.95);
+}
+
+.bg-blue { background: var(--primary-gradient); }
+.bg-orange { background: var(--warning-gradient); }
+.bg-green { background: var(--success-gradient); }
+
+.grid-icon {
+  width: 50rpx; /* 调整图标大小 */
+  height: 50rpx;
+  /* SVG 默认为白色描边，无需反白滤镜 */
+}
