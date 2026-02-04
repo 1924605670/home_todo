@@ -84,10 +84,10 @@ Page({
 
       if (hour < 12) {
           options.push({ label: '今天中午', date: todayStr, time: '12:00' });
-          options.push({ label: '今天下班', date: todayStr, time: '18:00' });
+          options.push({ label: '今天下午', date: todayStr, time: '18:00' });
           options.push({ label: '今晚', date: todayStr, time: '21:00' });
       } else if (hour < 18) {
-          options.push({ label: '今天下班', date: todayStr, time: '18:00' });
+          options.push({ label: '今天下午', date: todayStr, time: '18:00' });
           options.push({ label: '今晚', date: todayStr, time: '21:00' });
           options.push({ label: '明天上午', date: tomorrowStr, time: '09:00' });
       } else if (hour < 21) {

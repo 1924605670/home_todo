@@ -8,11 +8,24 @@ Page({
     tabs: ['我的待办', '家庭任务', '逾期任务'],
     tasks: [],
     familyId: null,
-    userInfo: null
+    userInfo: null,
+    
+    // 日历相关
+    currentYear: new Date().getFullYear(),
+    currentMonth: new Date().getMonth() + 1,
+    calendarDays: [],
+    selectedDate: '', // 格式 YYYY-MM-DD
+    allTasks: [] // 存储当前家庭所有任务，用于日历统计
   },
 
   onShow: function () {
     this.checkFamilyStatus()
+    // 初始化选中今天
+    const now = new Date();
+    this.setData({
+        selectedDate: `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`
+    });
+    this.generateCalendar(this.data.currentYear, this.data.currentMonth);
   },
 
   checkFamilyStatus() {
@@ -49,23 +62,170 @@ Page({
     if (this.data.currentTab === 2) filterType = 'overdue'
 
     wx.showLoading({ title: '加载中' })
-    api.get('/task/list', {
+    
+    // 1. 获取当前 tab 的任务列表
+    const p1 = api.get('/task/list', {
           familyId: this.data.familyId,
           filterType: filterType
-    }).then(res => {
+    });
+
+    // 2. 获取家庭所有任务用于日历统计 (仅当 allTasks 为空或需要刷新时)
+    // 这里简单起见，每次都拉取 family_all 来计算日历
+    const p2 = api.get('/task/list', {
+        familyId: this.data.familyId,
+        filterType: 'family_all' 
+    });
+
+    Promise.all([p1, p2]).then(results => {
         wx.hideLoading()
-        if (res.result.code === 0) {
-          const tasks = res.result.data.map(task => {
-            const d = new Date(task.deadline)
-            task.deadlineStr = `${d.getMonth()+1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()<10?'0'+d.getMinutes():d.getMinutes()}`
-            return task
-          })
-          
-          // 按日期分组
-          const taskGroups = this.groupTasksByDate(tasks);
-          this.setData({ taskGroups, tasks }) // 保留 tasks 以备不时之需，但主要渲染 taskGroups
+        const res1 = results[0];
+        const res2 = results[1];
+
+        // 处理当前列表数据
+        if (res1.result.code === 0) {
+          const tasks = this.processTasks(res1.result.data);
+          // 如果选中了日期，则在前端再过滤一次
+          const filteredTasks = this.filterTasksByDate(tasks, this.data.selectedDate);
+          const taskGroups = this.groupTasksByDate(filteredTasks);
+          this.setData({ taskGroups, tasks: filteredTasks })
         }
+
+        // 处理日历统计数据
+        if (res2.result.code === 0) {
+            this.setData({ allTasks: res2.result.data });
+            this.updateCalendarStats();
+        }
+
     }).catch(() => wx.hideLoading())
+  },
+
+  processTasks(data) {
+      return data.map(task => {
+        const d = new Date(task.deadline)
+        task.deadlineStr = `${d.getMonth()+1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()<10?'0'+d.getMinutes():d.getMinutes()}`
+        return task
+      })
+  },
+
+  filterTasksByDate(tasks, dateStr) {
+      if (!dateStr) return tasks;
+      // 筛选截止日期是选中日期的任务
+      // 注意：这里只比较日期部分
+      const target = dateStr.split('-').map(Number); // [2023, 10, 5]
+      
+      return tasks.filter(task => {
+          const d = new Date(task.deadline);
+          return d.getFullYear() === target[0] && 
+                 (d.getMonth() + 1) === target[1] && 
+                 d.getDate() === target[2];
+      });
+  },
+
+  // 日历逻辑
+  prevMonth() {
+      let { currentYear, currentMonth } = this.data;
+      if (currentMonth === 1) {
+          currentYear--;
+          currentMonth = 12;
+      } else {
+          currentMonth--;
+      }
+      this.setData({ currentYear, currentMonth });
+      this.generateCalendar(currentYear, currentMonth);
+      this.updateCalendarStats();
+  },
+
+  nextMonth() {
+      let { currentYear, currentMonth } = this.data;
+      if (currentMonth === 12) {
+          currentYear++;
+          currentMonth = 1;
+      } else {
+          currentMonth++;
+      }
+      this.setData({ currentYear, currentMonth });
+      this.generateCalendar(currentYear, currentMonth);
+      this.updateCalendarStats();
+  },
+
+  generateCalendar(year, month) {
+      const days = [];
+      const firstDay = new Date(year, month - 1, 1);
+      const lastDay = new Date(year, month, 0);
+      const daysInMonth = lastDay.getDate();
+      const startWeek = firstDay.getDay(); // 0-6
+
+      // 补全上个月
+      const prevLastDay = new Date(year, month - 1, 0).getDate();
+      for (let i = startWeek - 1; i >= 0; i--) {
+          days.push({
+              day: prevLastDay - i,
+              isCurrentMonth: false,
+              dateString: '' // 上个月的日期暂不处理点击
+          });
+      }
+
+      // 当月天数
+      for (let i = 1; i <= daysInMonth; i++) {
+          days.push({
+              day: i,
+              isCurrentMonth: true,
+              dateString: `${year}-${month}-${i}`,
+              pendingCount: 0,
+              completedCount: 0
+          });
+      }
+
+      // 补全下个月 (凑齐 42 格或 35 格)
+      const remaining = 42 - days.length;
+      for (let i = 1; i <= remaining; i++) {
+          days.push({
+              day: i,
+              isCurrentMonth: false,
+              dateString: ''
+          });
+      }
+
+      this.setData({ calendarDays: days });
+  },
+
+  updateCalendarStats() {
+      const { allTasks, calendarDays } = this.data;
+      if (!allTasks || allTasks.length === 0) return;
+
+      const newDays = calendarDays.map(day => {
+          if (!day.isCurrentMonth) return day;
+
+          // 统计该日期的任务
+          const targetDate = day.dateString; // YYYY-M-D
+          const [y, m, d] = targetDate.split('-').map(Number);
+
+          let pending = 0;
+          let completed = 0;
+
+          allTasks.forEach(task => {
+              const taskDate = new Date(task.deadline);
+              if (taskDate.getFullYear() === y && 
+                  (taskDate.getMonth() + 1) === m && 
+                  taskDate.getDate() === d) {
+                  
+                  if (task.status === 'completed') completed++;
+                  else pending++;
+              }
+          });
+
+          return { ...day, pendingCount: pending, completedCount: completed };
+      });
+
+      this.setData({ calendarDays: newDays });
+  },
+
+  onDateSelect(e) {
+      const date = e.currentTarget.dataset.date;
+      if (!date) return;
+      
+      this.setData({ selectedDate: date });
+      this.fetchTasks(); // 重新拉取并过滤
   },
 
   groupTasksByDate(tasks) {

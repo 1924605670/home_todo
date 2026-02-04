@@ -9,6 +9,38 @@
     </view>
   </view>
 
+  <!-- Calendar View -->
+  <view class="calendar-card card mb-20">
+    <!-- Month Switcher -->
+    <view class="calendar-header flex-row justify-between align-center mb-20">
+        <view class="month-btn" bindtap="prevMonth">◀</view>
+        <text class="text-h3">{{currentYear}}年{{currentMonth}}月</text>
+        <view class="month-btn" bindtap="nextMonth">▶</view>
+    </view>
+    
+    <!-- Week Header -->
+    <view class="week-header flex-row justify-between mb-10">
+        <text class="week-item" wx:for="{{['日','一','二','三','四','五','六']}}" wx:key="*this">{{item}}</text>
+    </view>
+
+    <!-- Days Grid -->
+    <view class="days-grid">
+        <view class="day-item {{item.isCurrentMonth ? '' : 'other-month'}} {{item.dateString === selectedDate ? 'selected' : ''}}" 
+              wx:for="{{calendarDays}}" wx:key="dateString"
+              bindtap="onDateSelect" data-date="{{item.dateString}}">
+            <text class="day-num">{{item.day}}</text>
+            <view class="dots-row">
+                <view class="dot pending" wx:if="{{item.pendingCount > 0}}"></view>
+                <view class="dot completed" wx:if="{{item.completedCount > 0}}"></view>
+            </view>
+            <!-- 只有选中时才显示详细数字，避免界面太乱 -->
+            <view class="stats-text" wx:if="{{item.dateString === selectedDate && (item.pendingCount > 0 || item.completedCount > 0)}}">
+                {{item.completedCount}}/{{item.pendingCount + item.completedCount}}
+            </view>
+        </view>
+    </view>
+  </view>
+
   <!-- Task List -->
   <view class="task-list">
     <block wx:if="{{taskGroups.length > 0}}">
