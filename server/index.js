@@ -4,10 +4,17 @@ const cors = require('cors');
 const axios = require('axios');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const db = require('./db');
 
 const app = express();
 const PORT = 3000;
+
+// 确保上传目录存在
+const uploadDir = path.join(__dirname, 'public/uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -17,7 +24,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 // Multer 配置
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/')
+        cb(null, uploadDir) // 使用绝对路径
     },
     filename: function (req, file, cb) {
         // 使用时间戳+随机数作为文件名
