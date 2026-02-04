@@ -3,7 +3,9 @@
     "pages/index/index",
     "pages/task_create/index",
     "pages/task_list/index",
-    "pages/profile/index"
+    "pages/profile/index",
+    "pages/rank/index",
+    "pages/shop/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
