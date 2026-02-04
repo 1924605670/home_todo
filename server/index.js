@@ -208,7 +208,8 @@ app.post('/api/task/complete', async (req, res) => {
         const task = taskRes.data;
         if (task.status === 'completed') return res.json({ code: 0, msg: '已完成' });
 
-        const rewardPoints = task.reward_points || 10; // 默认10分
+        const rewardPoints = parseInt(task.reward_points || 10, 10); // 强制转为整数
+        console.log(`[Task Complete] TaskID: ${taskId}, Reward: ${rewardPoints}, OpenID: ${openid}`);
 
         // 2. 更新任务状态
         await db.collection('tasks').doc(taskId).update({
@@ -222,17 +223,26 @@ app.post('/api/task/complete', async (req, res) => {
         // 3. 增加用户积分
         // 注意：这里需要原子操作或事务，简易版先分步执行
         const memberRes = await db.collection('members').where({ openid: openid, family_id: task.family_id }).get();
+        console.log(`[Task Complete] Member Search: Found ${memberRes.data.length} records`);
+        
         if (memberRes.data.length > 0) {
             const member = memberRes.data[0];
-            const newPoints = (member.points || 0) + rewardPoints;
-            const newTotal = (member.total_points || 0) + rewardPoints;
+            const currentPoints = parseInt(member.points || 0, 10);
+            const currentTotal = parseInt(member.total_points || 0, 10);
             
+            const newPoints = currentPoints + rewardPoints;
+            const newTotal = currentTotal + rewardPoints;
+            
+            console.log(`[Task Complete] Updating Member ${member._id}: ${currentPoints} -> ${newPoints}`);
+
             await db.collection('members').doc(member._id).update({
                 data: {
                     points: newPoints,
                     total_points: newTotal
                 }
             });
+        } else {
+            console.warn(`[Task Complete] Member not found for OpenID: ${openid} in Family: ${task.family_id}`);
         }
 
         res.json({ code: 0, msg: 'Success', data: { earnedPoints: rewardPoints } });
