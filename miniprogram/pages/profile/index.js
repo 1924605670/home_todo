@@ -94,7 +94,17 @@ Page({
           name: 'file',
           success: (res) => {
               wx.hideLoading();
-              const data = JSON.parse(res.data);
+              console.log('[Upload] Raw response:', res.data);
+              
+              let data;
+              try {
+                  data = JSON.parse(res.data);
+              } catch (e) {
+                  console.error('[Upload] JSON Parse Error:', e);
+                  wx.showToast({ title: '服务器返回错误', icon: 'none' });
+                  return;
+              }
+
               if (data.code === 0) {
                   const avatarUrl = data.data.url;
                   this.updateUserInfo(this.data.member.nickName, avatarUrl);
