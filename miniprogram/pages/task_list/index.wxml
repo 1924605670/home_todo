@@ -61,7 +61,7 @@
             <view class="flex-row justify-between mb-10">
               <text class="text-h3">{{item.title}}</text>
               <view class="status-tag {{item.status}}" wx:if="{{item.status !== 'pending'}}">
-                {{item.status === 'completed' ? '已完成' : '已逾期'}}
+                {{item.status === 'completed' ? '已完成' : (item.status === 'pending_approval' ? '待审核' : '已逾期')}}
               </view>
             </view>
             

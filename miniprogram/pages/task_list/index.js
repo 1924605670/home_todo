@@ -262,24 +262,45 @@ Page({
 
   showActionSheet(e) {
     const task = e.currentTarget.dataset.task
-    const itemList = ['标记完成', '删除任务']
+    let itemList = ['标记完成', '删除任务']
     
+    // 如果是管理员且任务待审核，增加选项
+    if (this.data.userInfo.role === 'admin' && task.status === 'pending_approval') {
+        itemList = ['通过审核', '删除任务']
+    } else if (task.status === 'completed' || task.status === 'pending_approval') {
+        itemList = ['删除任务']
+    }
+
     wx.showActionSheet({
       itemList,
       success: res => {
-        if (res.tapIndex === 0) {
+        const tapText = itemList[res.tapIndex];
+        if (tapText === '标记完成') {
           this.completeTask(task._id)
-        } else if (res.tapIndex === 1) {
+        } else if (tapText === '通过审核') {
+          this.approveTask(task._id)
+        } else if (tapText === '删除任务') {
           this.deleteTask(task._id)
         }
       }
     })
   },
 
+  approveTask(taskId) {
+      api.post('/task/approve', { taskId }).then(res => {
+          if (res.result.code === 0) {
+              wx.showToast({ title: '已通过' })
+              this.fetchTasks()
+          } else {
+              wx.showToast({ title: res.result.msg || '操作失败', icon: 'none' })
+          }
+      })
+  },
+
   completeTask(taskId) {
     api.post('/task/complete', { taskId }).then(res => {
         if (res.result.code === 0) {
-          wx.showToast({ title: '已完成' })
+          wx.showToast({ title: res.result.msg || '已提交' })
           this.fetchTasks()
         }
     })

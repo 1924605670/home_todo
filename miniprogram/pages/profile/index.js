@@ -74,6 +74,55 @@ Page({
     })
   },
 
+  onChooseAvatar(e) {
+      const { avatarUrl } = e.detail;
+      this.uploadAvatar(avatarUrl);
+  },
+
+  onNicknameChange(e) {
+      const nickName = e.detail.value;
+      this.updateUserInfo(nickName, this.data.member.avatarUrl);
+  },
+
+  uploadAvatar(tempFilePath) {
+      wx.showLoading({ title: '上传中' });
+      const apiBaseUrl = app.globalData.apiBaseUrl;
+      
+      wx.uploadFile({
+          url: `${apiBaseUrl}/upload`,
+          filePath: tempFilePath,
+          name: 'file',
+          success: (res) => {
+              wx.hideLoading();
+              const data = JSON.parse(res.data);
+              if (data.code === 0) {
+                  const avatarUrl = data.data.url;
+                  this.updateUserInfo(this.data.member.nickName, avatarUrl);
+              } else {
+                  wx.showToast({ title: '上传失败', icon: 'none' });
+              }
+          },
+          fail: () => {
+              wx.hideLoading();
+              wx.showToast({ title: '网络错误', icon: 'none' });
+          }
+      });
+  },
+
+  updateUserInfo(nickName, avatarUrl) {
+      const openid = app.globalData.openid;
+      api.post('/user/update', {
+          openid,
+          nickName,
+          avatarUrl
+      }).then(res => {
+          if (res.result.code === 0) {
+              wx.showToast({ title: '更新成功' });
+              this.fetchFamilyInfo(); // 刷新数据
+          }
+      });
+  },
+
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '用于完善会员资料', 

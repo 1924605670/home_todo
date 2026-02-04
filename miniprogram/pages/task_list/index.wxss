@@ -200,8 +200,20 @@
   padding: 4rpx 12rpx;
   border-radius: 8rpx;
 }
-.status-tag.completed { background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%); color: #38a169; }
-.status-tag.overdue { background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%); color: #e53e3e; }
+.status-tag.completed {
+  background: #E6FFFA;
+  color: #38B2AC;
+}
+
+.status-tag.pending_approval {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.status-tag.overdue {
+  background: #FFF5F5;
+  color: #E53E3E;
+}
 
 /* Empty State */
 .empty-state {
