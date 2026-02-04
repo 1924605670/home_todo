@@ -44,7 +44,8 @@ Page({
               hasFamily: true,
               // 同步用户信息和积分
               'userInfo.points': data.member.points || 0,
-              'userInfo.nickName': data.member.nickName
+              'userInfo.nickName': data.member.nickName,
+              'userInfo.avatarUrl': data.member.avatarUrl // 修复：同步头像
           })
           
           // 更新全局数据，方便其他页面使用
