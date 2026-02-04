@@ -262,7 +262,7 @@ app.get('/api/task/list', async (req, res) => {
 });
 
 app.post('/api/task/complete', async (req, res) => {
-    const { openid, taskId } = req.body;
+    const { openid, taskId, proofs } = req.body; // 增加 proofs 字段 (数组)
     try {
         // 1. 获取任务详情
         const taskRes = await db.collection('tasks').doc(taskId).get();
@@ -287,7 +287,8 @@ app.post('/api/task/complete', async (req, res) => {
                 data: {
                     status: 'completed',
                     complete_time: db.serverDate(),
-                    completer_openid: openid
+                    completer_openid: openid,
+                    proofs: proofs || [] // 管理员也可以补充证明
                 }
             });
 
@@ -309,7 +310,8 @@ app.post('/api/task/complete', async (req, res) => {
                 data: {
                     status: 'pending_approval',
                     submit_time: db.serverDate(),
-                    completer_openid: openid
+                    completer_openid: openid,
+                    proofs: proofs || [] // 保存证明文件 URL
                 }
             });
             res.json({ code: 0, msg: '已提交，等待管理员确认', data: { status: 'pending_approval' } });

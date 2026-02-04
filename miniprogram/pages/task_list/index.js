@@ -260,6 +260,14 @@ Page({
     return Object.values(groups).filter(g => g.list.length > 0);
   },
 
+  previewProof(e) {
+      const { current, urls } = e.currentTarget.dataset;
+      wx.previewImage({
+          current,
+          urls
+      });
+  },
+
   showActionSheet(e) {
     const task = e.currentTarget.dataset.task
     let itemList = ['标记完成', '删除任务']
@@ -269,14 +277,20 @@ Page({
         itemList = ['通过审核', '删除任务']
     } else if (task.status === 'completed' || task.status === 'pending_approval') {
         itemList = ['删除任务']
+    } else {
+        // 普通任务，点击标记完成时，允许上传证明
+        // 这里为了简单，先用 ActionSheet 区分
+        itemList = ['直接完成', '上传证明并完成', '删除任务']
     }
 
     wx.showActionSheet({
       itemList,
       success: res => {
         const tapText = itemList[res.tapIndex];
-        if (tapText === '标记完成') {
+        if (tapText === '标记完成' || tapText === '直接完成') {
           this.completeTask(task._id)
+        } else if (tapText === '上传证明并完成') {
+          this.chooseProofAndComplete(task._id)
         } else if (tapText === '通过审核') {
           this.approveTask(task._id)
         } else if (tapText === '删除任务') {
@@ -284,6 +298,50 @@ Page({
         }
       }
     })
+  },
+
+  chooseProofAndComplete(taskId) {
+      wx.chooseMedia({
+          count: 3,
+          mediaType: ['image'], // 暂时只支持图片
+          sourceType: ['album', 'camera'],
+          success: (res) => {
+              const tempFiles = res.tempFiles;
+              this.uploadProofs(tempFiles, (urls) => {
+                  this.completeTask(taskId, urls);
+              });
+          }
+      })
+  },
+
+  uploadProofs(files, cb) {
+      wx.showLoading({ title: '上传中' });
+      const apiBaseUrl = app.globalData.apiBaseUrl;
+      const urls = [];
+      let completed = 0;
+
+      files.forEach(file => {
+          wx.uploadFile({
+              url: `${apiBaseUrl}/upload`,
+              filePath: file.tempFilePath,
+              name: 'file',
+              success: (res) => {
+                  try {
+                      const data = JSON.parse(res.data);
+                      if (data.code === 0) {
+                          urls.push(data.data.url);
+                      }
+                  } catch(e) {}
+              },
+              complete: () => {
+                  completed++;
+                  if (completed === files.length) {
+                      wx.hideLoading();
+                      cb(urls);
+                  }
+              }
+          });
+      });
   },
 
   approveTask(taskId) {
@@ -297,8 +355,8 @@ Page({
       })
   },
 
-  completeTask(taskId) {
-    api.post('/task/complete', { taskId }).then(res => {
+  completeTask(taskId, proofs = []) {
+    api.post('/task/complete', { taskId, proofs }).then(res => {
         if (res.result.code === 0) {
           wx.showToast({ title: res.result.msg || '已提交' })
           this.fetchTasks()

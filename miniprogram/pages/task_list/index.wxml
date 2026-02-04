@@ -66,6 +66,11 @@
             </view>
             
             <view class="text-desc mb-20 line-clamp-2">{{item.desc || '暂无描述'}}</view>
+
+            <!-- 证明图片预览 -->
+            <view class="proofs-row mb-20" wx:if="{{item.proofs && item.proofs.length > 0}}">
+                <image class="proof-img" wx:for="{{item.proofs}}" wx:for-item="url" wx:key="*this" src="{{url}}" mode="aspectFill" catchtap="previewProof" data-current="{{url}}" data-urls="{{item.proofs}}"></image>
+            </view>
             
             <view class="footer flex-row justify-between align-center">
               <view class="flex-row align-center">

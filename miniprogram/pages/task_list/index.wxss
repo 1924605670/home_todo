@@ -215,6 +215,19 @@
   color: #E53E3E;
 }
 
+.proofs-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10rpx;
+}
+
+.proof-img {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 8rpx;
+    background: #f0f0f0;
+}
+
 /* Empty State */
 .empty-state {
   padding-top: 200rpx;
