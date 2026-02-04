@@ -9,7 +9,7 @@ App({
       familyInfo: null,
       memberInfo: null,
       // 自有服务器地址 (本地调试用 localhost，真机调试需换成局域网IP或公网域名)
-      apiBaseUrl: 'http://8.152.223.130:3000/api', 
+      apiBaseUrl: 'https://www.hometodo.top/hometodo/api', 
       openid: wx.getStorageSync('openid') || null
     };
   }
