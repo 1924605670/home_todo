@@ -48,7 +48,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     // const baseUrl = `http://localhost:${PORT}`; 
     // const baseUrl = `http://8.152.223.130:${PORT}`; // 保持和前端配置一致
     // 动态获取 host
-    const protocol = req.protocol;
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
     const host = req.get('host');
     const url = `${protocol}://${host}/public/uploads/${req.file.filename}`;
     
