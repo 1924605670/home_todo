@@ -86,12 +86,12 @@
           </view>
           <text class="text-body">发布任务</text>
         </view>
-        <view class="grid-item flex-col align-center" bindtap="goToList">
+        <view class="grid-item flex-col align-center" bindtap="goToShop">
           <view class="icon-box bg-orange mb-10">
-            <!-- 列表图标 -->
-            <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTkgMTFoMTJNOSAxN2gxMk05IDVoMTJNMzIDN2gyTTMgMTdoMk0zIDdoMiIvPjwvc3ZnPg==" class="grid-icon"></image>
+            <!-- 礼物图标 -->
+            <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDEydjEwSDRWMTJoMTZ6bTAgMGEyIDIgMCAwIDAgMi0ydi00YTIgMiAwIDAgMC0yLTJIMUMyIDQgMiA2IDIgOHY0YTIgMiAwIDAgMCAyIDJ2MTBtMC0xMGgyTTExIDEydi00bTItOEw5IDQiLz48L3N2Zz4=" class="grid-icon"></image>
           </view>
-          <text class="text-body">家庭任务</text>
+          <text class="text-body">积分商城</text>
         </view>
         <view class="grid-item flex-col align-center" bindtap="goToRank">
           <view class="icon-box bg-green mb-10">

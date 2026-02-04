@@ -276,6 +276,122 @@ app.post('/api/task/delete', async (req, res) => {
     }
 });
 
+// ---------------------- 积分商城接口 ----------------------
+
+// 1. 获取商品列表
+app.get('/api/reward/list', async (req, res) => {
+    const { familyId } = req.query;
+    try {
+        // 暂时返回所有商品，实际应该按 familyId 过滤（如果支持自定义商品）
+        // 这里为了演示，假设商品是全局通用的或者已经按 familyId 存储
+        // const condition = familyId ? { family_id: familyId } : {}; 
+        // 简化版：每个家庭看到同样的预设商品，或者必须传 familyId
+        
+        const condition = {};
+        if (familyId) condition.family_id = familyId;
+
+        const result = await db.collection('rewards').where(condition).get();
+        res.json({ code: 0, data: result.data });
+    } catch (e) {
+        res.json({ code: -1, msg: '获取商品失败', error: e.toString() });
+    }
+});
+
+// 2. 上架商品 (管理员)
+app.post('/api/reward/create', async (req, res) => {
+    const { familyId, name, points, image, stock } = req.body;
+    try {
+        await db.collection('rewards').add({
+            data: {
+                family_id: familyId,
+                name,
+                points: parseInt(points),
+                image: image || '', // 暂时只存 URL
+                stock: parseInt(stock) || 999,
+                create_time: db.serverDate()
+            }
+        });
+        res.json({ code: 0, msg: '上架成功' });
+    } catch (e) {
+        res.json({ code: -1, msg: '上架失败', error: e.toString() });
+    }
+});
+
+// 3. 兑换商品
+app.post('/api/reward/redeem', async (req, res) => {
+    const { openid, rewardId, familyId } = req.body;
+    try {
+        // a. 检查商品是否存在及库存
+        const rewardRes = await db.collection('rewards').doc(rewardId).get();
+        if (!rewardRes.data) return res.json({ code: -1, msg: '商品不存在' });
+        const reward = rewardRes.data;
+
+        if (reward.stock <= 0) return res.json({ code: -1, msg: '库存不足' });
+
+        // b. 检查用户积分是否足够
+        const memberRes = await db.collection('members').where({ openid, family_id: familyId }).get();
+        if (memberRes.data.length === 0) return res.json({ code: -1, msg: '用户不存在' });
+        
+        const member = memberRes.data[0];
+        const currentPoints = parseInt(member.points || 0);
+        const cost = parseInt(reward.points);
+
+        if (currentPoints < cost) {
+            return res.json({ code: -1, msg: `积分不足，还差 ${cost - currentPoints} 分` });
+        }
+
+        // c. 执行扣除积分 (原子操作需事务，这里简化为分步)
+        // 扣积分
+        await db.collection('members').doc(member._id).update({
+            data: {
+                points: currentPoints - cost
+            }
+        });
+
+        // 扣库存
+        await db.collection('rewards').doc(rewardId).update({
+            data: {
+                stock: reward.stock - 1
+            }
+        });
+
+        // 写入兑换记录
+        await db.collection('redemptions').add({
+            data: {
+                family_id: familyId,
+                openid,
+                reward_id: rewardId,
+                reward_name: reward.name,
+                cost,
+                status: 'pending', // 待家长确认
+                create_time: db.serverDate()
+            }
+        });
+
+        res.json({ code: 0, msg: '兑换成功，等待家长确认' });
+
+    } catch (e) {
+        res.json({ code: -1, msg: '兑换失败', error: e.toString() });
+    }
+});
+
+// 4. 获取兑换记录
+app.get('/api/redemption/list', async (req, res) => {
+    const { familyId, openid } = req.query;
+    try {
+        const condition = { family_id: familyId };
+        if (openid) condition.openid = openid; // 如果传了 openid，只看自己的
+
+        const result = await db.collection('redemptions')
+            .where(condition)
+            .orderBy('create_time', 'desc')
+            .get();
+        res.json({ code: 0, data: result.data });
+    } catch (e) {
+        res.json({ code: -1, msg: '获取记录失败', error: e.toString() });
+    }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

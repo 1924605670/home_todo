@@ -1,0 +1,74 @@
+page {
+  background: #F7F8FA;
+}
+
+.header-card {
+  background: var(--primary-gradient);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 20rpx rgba(102, 126, 234, 0.2);
+}
+
+.btn-history {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 10rpx 24rpx;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+}
+
+/* Grid Layout */
+.shop-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.goods-item {
+  width: 48%; /* Two columns */
+  margin-bottom: 30rpx;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.goods-img {
+  width: 100%;
+  height: 240rpx;
+  background: #f0f0f0;
+}
+
+.goods-info {
+  padding: 20rpx;
+}
+
+.goods-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: var(--text-main);
+}
+
+.goods-price {
+  color: #F6AD55; /* Orange */
+  font-weight: bold;
+  font-size: 30rpx;
+}
+
+.goods-stock {
+  font-size: 22rpx;
+}
+
+/* Add Item Style */
+.add-item {
+  min-height: 360rpx; /* Match approximate height of goods item */
+  border: 2rpx dashed #CBD5E0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.add-icon {
+  font-size: 60rpx;
+  color: #CBD5E0;
+  font-weight: 300;
+}

@@ -4,10 +4,10 @@
     <image class="avatar-lg mr-20" src="{{userInfo.avatarUrl || '../../images/user.png'}}"></image>
     <view class="flex-col">
       <view class="flex-row align-center mb-10">
-        <text class="text-h2 mr-10">{{userInfo.nickName || '未登录'}}</text>
+        <text class="text-h2 mr-10">{{member.nickName || userInfo.nickName || '未登录'}}</text>
         <view class="role-tag" wx:if="{{member}}">{{member.role === 'admin' ? '管理员' : '成员'}}</view>
       </view>
-      <text class="text-desc">积分: {{member.score || 0}} (功能开发中)</text>
+      <text class="text-desc">积分: {{member.points || 0}}</text>
     </view>
   </view>
 

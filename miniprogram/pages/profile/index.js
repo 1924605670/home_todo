@@ -21,6 +21,13 @@ Page({
     this.checkLoginStatus()
   },
 
+  onShow: function() {
+      // 每次显示页面时，重新拉取最新数据（同步积分）
+      if (this.data.hasFamily) {
+          this.fetchFamilyInfo()
+      }
+  },
+
   checkLoginStatus() {
     // 优先检查本地是否有 openid
     if (app.globalData.openid) {

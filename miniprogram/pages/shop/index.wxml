@@ -1,0 +1,46 @@
+<view class="container">
+  <!-- 顶部积分栏 -->
+  <view class="header-card mb-20">
+    <view class="flex-row justify-between align-center">
+      <view>
+        <view class="text-desc mb-10" style="color: rgba(255,255,255,0.8)">当前可用积分</view>
+        <view class="text-h1" style="color: #fff; font-size: 60rpx;">{{myPoints}}</view>
+      </view>
+      <view class="btn-history" bindtap="showHistory">兑换记录 ></view>
+    </view>
+  </view>
+
+  <!-- 商品列表 -->
+  <view class="shop-grid">
+    <view class="goods-item card" wx:for="{{goodsList}}" wx:key="_id" bindtap="redeemGoods" data-item="{{item}}">
+      <image class="goods-img" src="{{item.image || '../../images/gift_placeholder.png'}}" mode="aspectFill"></image>
+      <view class="goods-info">
+        <view class="goods-name text-truncate">{{item.name}}</view>
+        <view class="flex-row justify-between align-end">
+          <text class="goods-price">{{item.points}} 积分</text>
+          <text class="goods-stock text-desc">剩{{item.stock}}件</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 添加商品 (管理员可见，简化逻辑先所有人可见，实际应判断role) -->
+    <view class="goods-item card add-item flex-col align-center justify-center" bindtap="showAddModal">
+      <view class="add-icon">+</view>
+      <text class="text-desc mt-10">上架奖励</text>
+    </view>
+  </view>
+
+  <!-- 上架弹窗 -->
+  <view class="modal-mask" wx:if="{{showAddModal}}">
+    <view class="modal-content card">
+      <view class="text-h3 text-center mb-30">上架新奖励</view>
+      <input class="input-box mb-20" placeholder="奖励名称 (如: 看电视1小时)" bindinput="onInputName"/>
+      <input class="input-box mb-20" type="number" placeholder="所需积分 (如: 50)" bindinput="onInputPoints"/>
+      <input class="input-box mb-30" type="number" placeholder="库存数量 (默认999)" bindinput="onInputStock"/>
+      <view class="modal-footer flex-row justify-between">
+        <button class="btn-secondary mr-20" bindtap="closeModal">取消</button>
+        <button class="btn-primary" bindtap="confirmAdd">上架</button>
+      </view>
+    </view>
+  </view>
+</view>

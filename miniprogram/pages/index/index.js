@@ -40,7 +40,21 @@ Page({
     api.get('/family/info').then(res => {
         const { data } = res.result
         if (data && data.hasFamily) {
-          this.setData({ hasFamily: true })
+          this.setData({ 
+              hasFamily: true,
+              // 同步用户信息和积分
+              'userInfo.points': data.member.points || 0,
+              'userInfo.nickName': data.member.nickName
+          })
+          
+          // 更新全局数据，方便其他页面使用
+          if (data.member) {
+              const app = getApp();
+              if (app.globalData.userInfo) {
+                  app.globalData.userInfo.points = data.member.points || 0;
+              }
+          }
+
           this.fetchMyTasks(data.family._id)
         } else {
           this.setData({ hasFamily: false })
@@ -91,6 +105,10 @@ Page({
 
   goToRank() {
     wx.navigateTo({ url: '/pages/rank/index' })
+  },
+
+  goToShop() {
+    wx.navigateTo({ url: '/pages/shop/index' })
   },
 
   goToCreate() {
