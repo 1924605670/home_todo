@@ -1,6 +1,10 @@
 <view class="container">
-  <view class="header mb-20">
+  <view class="header mb-20 flex-row justify-between align-center">
     <text class="text-h2">发布新任务</text>
+    <button class="btn-copy" bindtap="copyYesterdayTasks">
+        <image class="icon-copy" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTI5NmRiIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHJlY3QgeD0iOSIgeT0iOSIgd2lkdGg9IjEzIiBoZWlnaHQ9IjEzIiByeD0iMiIgcnk9IjIiPjwvcmVjdD48cGF0aCBkPSJNNSAxNWgyYTIgMiAwIDAgMSAyLTJWM2EyIDIgMCAwIDEgMi0yaDEwIj48L3BhdGg+PC9zdmc+"></image>
+        <text>复制昨天</text>
+    </button>
   </view>
 
   <view class="card">

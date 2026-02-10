@@ -268,6 +268,37 @@ Page({
       });
   },
 
+  onTapApprove(e) {
+      const task = e.currentTarget.dataset.task;
+      wx.showModal({
+          title: '审核确认',
+          content: '确认通过该任务吗？',
+          confirmText: '通过',
+          cancelText: '取消',
+          success: (res) => {
+              if (res.confirm) {
+                  this.approveTask(task._id);
+              }
+          }
+      });
+  },
+
+  onTapComplete(e) {
+      const task = e.currentTarget.dataset.task;
+      wx.showActionSheet({
+          itemList: ['上传凭证并完成', '直接完成'],
+          success: (res) => {
+              if (res.tapIndex === 0) {
+                  // 上传凭证
+                  this.chooseProofAndComplete(task._id);
+              } else if (res.tapIndex === 1) {
+                  // 直接完成
+                  this.completeTask(task._id);
+              }
+          }
+      });
+  },
+
   showActionSheet(e) {
     const task = e.currentTarget.dataset.task
     let itemList = ['标记完成', '删除任务']
@@ -316,23 +347,19 @@ Page({
 
   uploadProofs(files, cb) {
       wx.showLoading({ title: '上传中' });
-      const apiBaseUrl = app.globalData.apiBaseUrl;
       const urls = [];
       let completed = 0;
 
       files.forEach(file => {
-          wx.uploadFile({
-              url: `${apiBaseUrl}/upload`,
+          const cloudPath = `proofs/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.png`;
+          
+          wx.cloud.uploadFile({
+              cloudPath: cloudPath,
               filePath: file.tempFilePath,
-              name: 'file',
               success: (res) => {
-                  try {
-                      const data = JSON.parse(res.data);
-                      if (data.code === 0) {
-                          urls.push(data.data.url);
-                      }
-                  } catch(e) {}
+                  urls.push(res.fileID);
               },
+              fail: console.error,
               complete: () => {
                   completed++;
                   if (completed === files.length) {

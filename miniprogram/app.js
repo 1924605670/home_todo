@@ -1,15 +1,24 @@
 // app.js
 App({
   onLaunch: function () {
-    // 移除云开发初始化
-    // if (!wx.cloud) { ... }
+    if (!wx.cloud) {
+      console.error('请使用 2.2.3 或以上的基础库以使用云能力');
+    } else {
+      wx.cloud.init({
+        // env 参数说明：
+        //   env 参数决定接下来小程序发起的云开发调用（wx.cloud.xxx）会默认请求到哪个云环境的资源
+        //   此处请填入环境 ID, 环境 ID 可打开云控制台查看
+        //   如不填则使用默认环境（第一个创建的环境）
+        // env: 'my-env-id',
+        traceUser: true,
+      });
+    }
 
     this.globalData = {
       userInfo: null,
       familyInfo: null,
       memberInfo: null,
-      // 自有服务器地址 (本地调试用 localhost，真机调试需换成局域网IP或公网域名)
-      apiBaseUrl: 'https://www.hometodo.top/hometodo/api', 
+      // 云开发模式下不再需要 apiBaseUrl
       openid: wx.getStorageSync('openid') || null
     };
   }

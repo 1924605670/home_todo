@@ -86,35 +86,23 @@ Page({
 
   uploadAvatar(tempFilePath) {
       wx.showLoading({ title: '上传中' });
-      const apiBaseUrl = app.globalData.apiBaseUrl;
       
-      wx.uploadFile({
-          url: `${apiBaseUrl}/upload`,
+      const cloudPath = `uploads/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.png`;
+      
+      wx.cloud.uploadFile({
+          cloudPath: cloudPath,
           filePath: tempFilePath,
-          name: 'file',
-          success: (res) => {
+          success: res => {
               wx.hideLoading();
-              console.log('[Upload] Raw response:', res.data);
+              console.log('[Upload] Success:', res.fileID);
               
-              let data;
-              try {
-                  data = JSON.parse(res.data);
-              } catch (e) {
-                  console.error('[Upload] JSON Parse Error:', e);
-                  wx.showToast({ title: '服务器返回错误', icon: 'none' });
-                  return;
-              }
-
-              if (data.code === 0) {
-                  const avatarUrl = data.data.url;
-                  this.updateUserInfo(this.data.member.nickName, avatarUrl);
-              } else {
-                  wx.showToast({ title: '上传失败', icon: 'none' });
-              }
+              const avatarUrl = res.fileID;
+              this.updateUserInfo(this.data.member.nickName, avatarUrl);
           },
-          fail: () => {
+          fail: err => {
               wx.hideLoading();
-              wx.showToast({ title: '网络错误', icon: 'none' });
+              console.error('[Upload] Fail:', err);
+              wx.showToast({ title: '上传失败', icon: 'none' });
           }
       });
   },

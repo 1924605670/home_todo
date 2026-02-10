@@ -78,7 +78,25 @@
                 <text class="text-desc mr-20">{{item.assignee_name}}</text>
                 <text class="tag tag-primary">{{item.type}}</text>
               </view>
-              <text class="text-desc">{{item.deadlineStr}}</text>
+              
+              <!-- 显式操作按钮 -->
+              <view class="flex-row align-center">
+                <text class="text-desc mr-20">{{item.deadlineStr}}</text>
+                <view class="btn-sm btn-outline" 
+                      wx:if="{{item.status === 'pending'}}" 
+                      catchtap="onTapComplete" 
+                      data-task="{{item}}"
+                      style="font-size: 24rpx; padding: 6rpx 16rpx; border: 1px solid #1296db; color: #1296db; border-radius: 8rpx;">
+                  完成
+                </view>
+                <view class="btn-sm btn-outline" 
+                      wx:if="{{item.status === 'pending_approval' && userInfo.role === 'admin'}}" 
+                      catchtap="onTapApprove" 
+                      data-task="{{item}}"
+                      style="font-size: 24rpx; padding: 6rpx 16rpx; border: 1px solid #07c160; color: #07c160; border-radius: 8rpx;">
+                  审核
+                </view>
+              </view>
             </view>
           </view>
         </view>

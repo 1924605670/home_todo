@@ -86,21 +86,73 @@ Page({
 
   completeTask(e) {
     const taskId = e.currentTarget.dataset.id
-    wx.showModal({
-      title: '确认完成',
-      content: '确定要标记该任务为完成吗？',
+    wx.showActionSheet({
+      itemList: ['上传凭证并完成', '直接完成'],
       success: (res) => {
-        if (res.confirm) {
-          wx.showLoading({ title: '处理中' })
-          api.post('/task/complete', { taskId }).then(res => {
-              wx.hideLoading()
-              if (res.result.code === 0) {
-                wx.showToast({ title: '已完成' })
-                this.checkFamilyStatus() 
-              }
-          })
+        if (res.tapIndex === 0) {
+          // 上传凭证
+          this.chooseProofAndComplete(taskId);
+        } else if (res.tapIndex === 1) {
+          // 直接完成
+          this.doCompleteTask(taskId);
         }
       }
+    });
+  },
+
+  chooseProofAndComplete(taskId) {
+      wx.chooseMedia({
+          count: 3,
+          mediaType: ['image'],
+          sourceType: ['album', 'camera'],
+          success: (res) => {
+              const tempFiles = res.tempFiles;
+              this.uploadProofs(tempFiles, (urls) => {
+                  this.doCompleteTask(taskId, urls);
+              });
+          }
+      })
+  },
+
+  uploadProofs(files, cb) {
+      wx.showLoading({ title: '上传中' });
+      const urls = [];
+      let completed = 0;
+
+      files.forEach(file => {
+          const cloudPath = `proofs/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.png`;
+          
+          wx.cloud.uploadFile({
+              cloudPath: cloudPath,
+              filePath: file.tempFilePath,
+              success: (res) => {
+                  urls.push(res.fileID);
+              },
+              fail: console.error,
+              complete: () => {
+                  completed++;
+                  if (completed === files.length) {
+                      wx.hideLoading();
+                      cb(urls);
+                  }
+              }
+          });
+      });
+  },
+
+  doCompleteTask(taskId, proofs = []) {
+    wx.showLoading({ title: '处理中' })
+    api.post('/task/complete', { taskId, proofs }).then(res => {
+        wx.hideLoading()
+        if (res.result.code === 0) {
+          wx.showToast({ title: '已完成' })
+          this.checkFamilyStatus() 
+        } else {
+          wx.showToast({ title: res.result.msg || '操作失败', icon: 'none' })
+        }
+    }).catch(() => {
+        wx.hideLoading()
+        wx.showToast({ title: '网络错误', icon: 'none' })
     })
   },
 

@@ -44,7 +44,7 @@
     "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.19.4",
+  "libVersion": "3.14.1",
   "appid": "wx30321379334ec662",
   "projectname": "FamilyTaskAssistant",
   "isGameTourist": false,
@@ -76,7 +76,16 @@
   },
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "value": "\\._.*",
+        "type": "regexp"
+      },
+      {
+        "value": ".DS_Store",
+        "type": "file"
+      }
+    ],
     "include": []
   },
   "editorSetting": {}

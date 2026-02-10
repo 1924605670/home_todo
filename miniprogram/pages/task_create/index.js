@@ -100,14 +100,38 @@ Page({
           options.push({ label: '明天晚上', date: tomorrowStr, time: '21:00' });
       }
 
-      // 默认选中第一个建议
-      if (options.length > 0) {
-          this.setData({
-              deadlineOptions: options,
-              date: options[0].date,
-              time: options[0].time
-          });
-      }
+      this.setData({
+          deadlineOptions: options,
+          date: todayStr, // 默认始终选中今天
+          time: options[0].time // 时间跟随第一个建议
+      });
+  },
+
+  copyYesterdayTasks() {
+      if (this.data.members.length === 0) return;
+      const familyId = this.data.members[0].family_id;
+
+      wx.showModal({
+          title: '复制昨天任务',
+          content: '确定要将昨天截止的所有任务，复制到今天吗？',
+          success: (res) => {
+              if (res.confirm) {
+                  wx.showLoading({ title: '复制中' });
+                  api.post('/task/copy', { familyId }).then(res => {
+                      wx.hideLoading();
+                      if (res.result.code === 0) {
+                          wx.showToast({ title: res.result.msg, icon: 'none' });
+                          // 可以在这里提示用户去任务列表查看，或者不做操作
+                      } else {
+                          wx.showToast({ title: res.result.msg || '复制失败', icon: 'none' });
+                      }
+                  }).catch(err => {
+                      wx.hideLoading();
+                      console.error(err);
+                  });
+              }
+          }
+      });
   },
 
   fetchMembers(familyId) {
@@ -169,7 +193,7 @@ Page({
     wx.showLoading({ title: '发布中' })
     
     api.post('/task/create', {
-        familyId: assignee.family_id,
+        family_id: assignee.family_id,
         title: this.data.title,
         desc: this.data.desc,
         type: this.data.types[this.data.typeIndex],
@@ -183,18 +207,8 @@ Page({
         wx.hideLoading()
         if (res.result.code === 0) {
           wx.showToast({ title: '发布成功' })
+          // 仅清空标题和描述，保留其他选项方便连续发布
           this.setData({ title: '', desc: '' })
-          
-          // 强制刷新上一页数据
-          const pages = getCurrentPages();
-          const prevPage = pages[pages.length - 2];
-          if (prevPage && prevPage.checkFamilyStatus) {
-             prevPage.checkFamilyStatus();
-          }
-
-          setTimeout(() => {
-            wx.switchTab({ url: '/pages/task_list/index' })
-          }, 1500)
         } else {
           wx.showToast({ title: '发布失败', icon: 'none' })
         }
